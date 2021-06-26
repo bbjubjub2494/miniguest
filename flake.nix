@@ -11,10 +11,11 @@
     eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+miniguest = pkgs.callPackage ./miniguest { };
       in
       rec {
         defaultPackage = miniguest;
-        miniguest = pkgs.callPackage ./miniguest { };
+        packages = { inherit miniguest; };
         defaultApp = mkApp { drv = miniguest; };
       });
 }
