@@ -3,10 +3,10 @@
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = inputs@{ self, nixpkgs, flake-utils }:
     with flake-utils.lib;
     {
-      nixosModules.miniguest = import modules/miniguest.nix;
+      nixosModules.miniguest = import modules/miniguest.nix inputs;
     } //
     eachDefaultSystem (system:
       let
