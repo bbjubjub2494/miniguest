@@ -1,0 +1,11 @@
+imports = [ "git.hooks" ]
+
+[devshell]
+name = "miniguest"
+
+[[commands]]
+package = "nixpkgs-fmt"
+category = "formatters"
+
+[git.hooks]
+enable = true
