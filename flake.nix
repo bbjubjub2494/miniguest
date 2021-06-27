@@ -24,6 +24,7 @@
           devShell = final.devshell.mkShell {
             imports = [ (final.devshell.importTOML ./devshell.toml) ];
           };
+          checks = import ./checks inputs final prev;
         };
       };
     };
