@@ -8,6 +8,9 @@
     with flake-utils.lib;
     {
       nixosModules.miniguest = import modules/miniguest.nix inputs;
+      overlay = final: prev: {
+        miniguest = final.callPackage ./miniguest { };
+      };
     } // simpleFlake {
       inherit self nixpkgs;
       name = "miniguest";
