@@ -17,3 +17,7 @@ category = "linters"
 
 [git.hooks]
 enable = true
+pre-commit.text = """
+find -name '*.nix' | xargs -r nixpkgs-fmt --check || exit
+find -name '*.bash' | xargs -r shfmt -d -s || exit
+"""
