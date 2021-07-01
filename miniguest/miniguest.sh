@@ -1,21 +1,25 @@
 guestsDir=/etc/miniguests
 
+function err {
+	echo >&2 "$@"
+}
+
 function fail_with {
 	local status=$1; shift
 	test $status -gt 0 || fail "internal: bad status"
 	if [ $# -gt 0 ]; then
-		echo >&2 $*
+		err $*
 	fi
 	exit $status
 }
 
 function fail {
-  fail_with 1 "$@"
+	fail_with 1 "$@"
 }
 
 function usage {
-cat >&2 << END
-usage: miniguest [guest-name]
+	cat >&2 << END
+usage: miniguest install <flake reference>
 END
 }
 
@@ -24,27 +28,42 @@ function fail_with_usage {
 	fail_with 2
 }
 
-# restrict the character range out of caution
-function validate_guest_name {
-[[ $guestName =~ ^[-[:graph:]]+$ ]] || fail "illegal guest name"
+function parse_flake_reference {
+	[[ "$1" =~ ^(.*)\#([^\#\"]*)$ ]] || fail "cannot parse flake reference"
+	flake="${BASH_REMATCH[1]}"
+	guestName="${BASH_REMATCH[2]}"
 }
 
+# parse common flags
 while arg="$1"; shift; do
 	case "$arg" in
+		install)
+			doInstall=yes
+			break
+			;;
 		*)
-			if [ ! -v guestName ]; then
-				guestName="$arg"
-			else
+			err "unrecognized: $arg"
 			fail_with_usage
+			;;
+	esac
+done
+
+# parse install subcommand flags
+while arg="$1"; test $doInstall && shift; do
+	case "$arg" in
+		*)
+			if test ! -v flake; then
+				parse_flake_reference "$arg"
+			else
+				fail_with_usage
 			fi
 			;;
 	esac
 done
 
-test -v guestName || fail_with_usage
+test -v flake || fail_with_usage
 
-validate_guest_name
-
-mkdir -p "$guestsDir" || fail
-
-nix build --profile "$guestsDir/$guestName" ".#nixosConfigurations.$guestName.config.system.build.miniguest" || fail
+if test $doInstall; then
+	mkdir -p "$guestsDir" || fail
+	nix build --profile "$guestsDir/$guestName" "$flake#nixosConfigurations.$guestName.config.system.build.miniguest" || fail
+fi
