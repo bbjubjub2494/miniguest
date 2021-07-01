@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 guestsDir=/etc/miniguests
 
 function err {
@@ -5,12 +7,13 @@ function err {
 }
 
 function fail_with {
-	local status=$1; shift
-	test $status -gt 0 || fail "internal: bad status"
+	local status=$1
+	shift
+	test "$status" -gt 0 || fail "internal: bad status"
 	if [ $# -gt 0 ]; then
-		err $*
+		err "$@"
 	fi
-	exit $status
+	exit "$status"
 }
 
 function fail {
@@ -18,7 +21,7 @@ function fail {
 }
 
 function usage {
-	cat >&2 << END
+	cat >&2 <<END
 usage: miniguest install <flake reference>
 END
 }
@@ -29,35 +32,41 @@ function fail_with_usage {
 }
 
 function parse_flake_reference {
-	[[ "$1" =~ ^(.*)\#([^\#\"]*)$ ]] || fail "cannot parse flake reference"
+	[[ $1 =~ ^(.*)\#([^\#\"]*)$ ]] || fail "cannot parse flake reference"
 	flake="${BASH_REMATCH[1]}"
 	guestName="${BASH_REMATCH[2]}"
 }
 
 # parse common flags
-while arg="$1"; shift; do
+while
+	arg="$1"
+	shift
+do
 	case "$arg" in
-		install)
-			doInstall=yes
-			break
-			;;
-		*)
-			err "unrecognized: $arg"
-			fail_with_usage
-			;;
+	install)
+		doInstall=yes
+		break
+		;;
+	*)
+		err "unrecognized: $arg"
+		fail_with_usage
+		;;
 	esac
 done
 
 # parse install subcommand flags
-while arg="$1"; test $doInstall && shift; do
+while
+	arg="$1"
+	test $doInstall && shift
+do
 	case "$arg" in
-		*)
-			if test ! -v flake; then
-				parse_flake_reference "$arg"
-			else
-				fail_with_usage
-			fi
-			;;
+	*)
+		if test ! -v flake; then
+			parse_flake_reference "$arg"
+		else
+			fail_with_usage
+		fi
+		;;
 	esac
 done
 
