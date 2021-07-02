@@ -16,17 +16,33 @@ Libvirt KVM guests are the current primary focus.  Any hypervisor that is
 capable of direct-kernel boot can most likely work as well.  Libvirt OS
 containers will come in the future.
 
-## Dependencies
+## Installation
 
-- Nix 2.4+
-- Bash 4.0+
+If the Nix you drive already has [flakes] enabled, just use the following command:
+```sh
+nix profile install github:bbjubjub2494/miniguest
+```
+
+Otherwise don't worry, miniguest can be bootstrapped under Nix 2.3 and older with with:
+```sh
+nix-env -if https://github.com/bbjubjub2494/miniguest/archive/refs/heads/master.zip
+```
+
+If you do not have Nix installed, refer to [this
+page](https://nixos.org/download.html#nix-quick-install), then look at the
+second command.
+
+[flakes]: https://nixos.wiki/wiki/Flakes
 
 ## Usage
 
-Guest system configuration must be presented within a Nix flake, import this
-flake's `nixosModules.miniguest` module, and set `boot.miniguest.enable` to
-true.  The `miniguest` tool can then be invoked with the name of the guest as an
-argument.  The configuration will then be built and will appear under
+Guest system configuration must be presented within a Nix flake, import the
+`nixosModules.miniguest` module from the miniguest flake, and set
+`boot.miniguest.enable` to true.  The miniguest tool can then be invoked with
+```sh
+sudo miniguest install «flakePath»#«guestName»
+```
+The configuration will then be built and will appear under
 `/etc/miniguests/«guestName»`.  Refer to [this
 template](templates/libvirt-kvm.xml) to create the corresponding libvirt
 domain.
