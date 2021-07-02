@@ -1,2 +1,5 @@
-{ writers }:
-writers.writeBashBin "miniguest" ./miniguest.sh
+{ substituteAll, nixFlakes, writers }:
+writers.writeBashBin "miniguest" (substituteAll {
+  src = ./miniguest.bash;
+  inherit nixFlakes;
+})

@@ -1,6 +1,8 @@
-# shellcheck shell=bash
-
 guestsDir=/etc/miniguests
+
+function nix {
+	@nixFlakes@/bin/nix --experimental-features "nix-command flakes" "$@"
+}
 
 function err {
 	echo >&2 "$@"
