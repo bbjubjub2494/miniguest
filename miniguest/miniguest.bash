@@ -1,3 +1,5 @@
+#! @bash@/bin/sh
+
 guestsDir=/etc/miniguests
 
 function nix {
