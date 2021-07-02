@@ -12,6 +12,10 @@ package = "shfmt"
 category = "formatters"
 
 [[commands]]
+package = "argbash"
+category = "preprocessors"
+
+[[commands]]
 package = "shellcheck"
 category = "linters"
 
