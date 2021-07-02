@@ -4,6 +4,12 @@ imports = [ "git.hooks" ]
 name = "miniguest"
 
 [[commands]]
+package = "bash"
+
+[[commands]]
+package = "nixFlakes"
+
+[[commands]]
 package = "nixpkgs-fmt"
 category = "formatters"
 
