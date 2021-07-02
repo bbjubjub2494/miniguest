@@ -1,5 +1,5 @@
 function run_nix {
-	@nixFlakes@/bin/nix --experimental-features "nix-command flakes" "$@"
+	command "$nix" --experimental-features "nix-command flakes" "$@"
 }
 
 flake=
