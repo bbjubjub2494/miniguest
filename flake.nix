@@ -11,6 +11,10 @@
       overlay = final: prev: {
         miniguest = final.callPackage ./miniguest { };
       };
+      defaultTemplate = {
+        description = "Example guest configurations";
+        path = ./template;
+      };
     } // simpleFlake {
       inherit self nixpkgs;
       name = "miniguest";

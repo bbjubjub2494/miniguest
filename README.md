@@ -34,6 +34,14 @@ second command.
 
 [flakes]: https://nixos.wiki/wiki/Flakes
 
+## Getting started
+
+You base your flake on the template. Copy the `template/` directory from the
+repository, or run:
+```sh
+nix flake new -t github:bbjubjub2494/miniguest
+```
+
 ## Usage
 
 Guest system configuration must be presented within a Nix flake, import the
@@ -43,9 +51,7 @@ Guest system configuration must be presented within a Nix flake, import the
 sudo miniguest install «flakePath»#«guestName»
 ```
 The configuration will then be built and will appear under
-`/etc/miniguests/«guestName»`.  Refer to [this
-template](templates/libvirt-kvm.xml) to create the corresponding libvirt
-domain.
+`/etc/miniguests/«guestName»`.
 
 It is recommended to create at most one domain per configuration so that they
 can all be rebuilt independently of each other.
