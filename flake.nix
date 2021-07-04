@@ -21,9 +21,7 @@
           miniguest = final.callPackage ./miniguest { };
           defaultPackage = miniguest;
           defaultApp = mkApp { drv = miniguest; };
-          devShell = final.devshell.mkShell {
-            imports = [ (final.devshell.importTOML ./devshell.toml) ];
-          };
+          devShell = final.devshell.fromTOML ./devshell.toml;
           checks = import ./checks inputs final prev;
         };
       };

@@ -28,6 +28,18 @@ category = "linters"
 [git.hooks]
 enable = true
 pre-commit.text = """
-find -name '*.nix' | xargs -r nixpkgs-fmt --check || exit
-find -name '*.bash' | xargs -r shfmt -d -s || exit
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+  against=HEAD
+else
+  # Initial commit: diff against an empty tree object
+  against=$(git hash-object -t tree /dev/null)
+fi
+
+function find_staged {
+  git diff-index --name-only --cached $against --diff-filter d -- "$@"
+}
+
+find_staged '*.nix' | xargs -r nixpkgs-fmt --check || exit
+find_staged '*.bash' | xargs -r shfmt -d -s || exit
 """
