@@ -16,7 +16,7 @@
 # along with Miniguest.  If not, see <https://www.gnu.org/licenses/>.
 
 # ARG_POSITIONAL_SINGLE(command, subcommand to run)
-# ARG_TYPE_GROUP_SET(commands, COMMAND, command, [install,help])
+# ARG_TYPE_GROUP_SET(commands, COMMAND, command, [install,upgrade,remove,help])
 # ARG_OPTIONAL_SINGLE(guests-dir, , directory containing guests profiles, /etc/miniguests)
 # ARG_OPTIONAL_SINGLE(nix, , path to the nix binary, @nixFlakes@/bin/nix)
 # ARG_LEFTOVERS(subcommand arguments)
