@@ -16,7 +16,7 @@
 # along with Miniguest.  If not, see <https://www.gnu.org/licenses/>.
 
 function run_nix {
-	command "$nix" --experimental-features "nix-command flakes" "$@"
+	command "$nix" --experimental-features "nix-command flakes ca-references" "$@"
 }
 
 flake=
@@ -26,4 +26,35 @@ function parse_flake_reference {
 	[[ $1 =~ ^(.*)\#([^\#\"]*)$ ]] || die "cannot parse flake reference"
 	flake="${BASH_REMATCH[1]}"
 	guest_name="${BASH_REMATCH[2]}"
+}
+
+function install_profile {
+	[[ $# -eq 2 ]] || die "$FUNCNAME: wrong number of arguments!"
+	local guest_name="$1"
+	local target="$2"
+	run_nix profile install --profile "$profiles_dir/$guest_name" "$target" ||
+		die "unable to install $guest_name!" $?
+}
+
+function upgrade_profile {
+	[[ $# -eq 1 ]] || die "$FUNCNAME: wrong number of arguments!"
+	local guest_name="$1"
+	run_nix profile upgrade --profile "$guests_dir/$guest_name" ||
+		die "unable to upgrade $guest_name!" $?
+}
+
+function reset_profile {
+	[[ $# -eq 1 ]] || die "$FUNCNAME: wrong number of arguments!"
+	local guest_name="$1"
+	run_nix profile remove --profile "$profiles_dir/$guest_name" '.*' ||
+		die "unable to remove guest!" $?
+}
+
+function have_control_of_symlink {
+	[[ $# -eq 1 ]] || die "$FUNCNAME: wrong number of arguments!"
+	local symlink="$guests_dir/$guest_name"
+	[[ ! -e $symlink || -L $symlink && $(readlink $symlink) -ef "$profiles_dir/$guest_name" ]] || {
+		echo >&2 "not touching $guests_dir/$guest_name because it's not in an expected state"
+		false
+	}
 }

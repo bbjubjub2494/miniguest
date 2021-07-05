@@ -21,5 +21,8 @@ parse_flake_reference "$_arg_flake_reference"
 
 mkdir -p "$guests_dir" || die "" $?
 mkdir -p "$profiles_dir" || die "" $?
-run_nix build --profile "$profiles_dir/$guest_name" "$flake#nixosConfigurations.$guest_name.config.system.build.miniguest" || die "unable to build guest!" $?
-ln -sf "$profiles_dir/$guest_name" "$guests_dir" || die "" $?
+
+reset_profile "$guest_name" # FIXME: need an atomic reset-and-install
+install_profile "$guest_name" "$flake#nixosConfigurations.$guest_name.config.system.build.miniguest"
+
+have_control_of_symlink "$guest_name" && ln -sf "$profiles_dir/$guest_name" "$guests_dir"

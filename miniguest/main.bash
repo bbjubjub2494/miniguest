@@ -25,6 +25,14 @@ nix="$_arg_nix"
 
 source functions.bash
 
-if test "${_arg_command:?}" = install; then
+case "${_arg_command:?}" in
+install)
 	source install.bash "${_arg_leftovers[@]}"
-fi
+	;;
+upgrade)
+	source upgrade.bash "${_arg_leftovers[@]}"
+	;;
+remove)
+	source remove.bash "${_arg_leftovers[@]}"
+	;;
+esac
