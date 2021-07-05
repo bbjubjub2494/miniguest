@@ -1,0 +1,40 @@
+<domain type="lxc">
+ <name>container-example-miniguest</name>
+ <metadata>
+  <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+   <libosinfo:os id="http://nixos.org/nixos/unstable"/>
+  </libosinfo:libosinfo>
+ </metadata>
+ <os>
+  <type arch="x86_64">exe</type>
+  <init>/boot/init</init>
+ </os>
+ <memory unit="GiB">1</memory>
+ <resource>
+  <partition>/machine</partition>
+ </resource>
+ <features>
+  <privnet/>
+ </features>
+ <clock offset="utc"/>
+ <devices>
+  <filesystem type="mount" accessmode="squash">
+   <source dir="/var/lib/libvirt/images/container-example-miniguest"/>
+   <target dir="/"/>
+  </filesystem>
+  <filesystem type="mount" accessmode="mapped">
+   <source dir="/nix/store"/>
+   <target dir="/nix/store"/>
+   <readonly/>
+  </filesystem>
+  <filesystem type="mount" accessmode="mapped">
+   <source dir="/etc/miniguests/container/boot"/>
+   <target dir="/boot"/>
+   <readonly/>
+  </filesystem>
+  <console type="pty">
+   <target type="lxc" port="0"/>
+  </console>
+ </devices>
+</domain>
+

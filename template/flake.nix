@@ -10,7 +10,7 @@
 
   outputs = { self, nixos, miniguest, flake-utils }:
     with nixos.lib; {
-      nixosConfigurations = attrsets.genAttrs [ "stateless" ] (name:
+      nixosConfigurations = attrsets.genAttrs [ "container" "stateless" ] (name:
         nixosSystem {
           system = "x86_64-linux";
           modules = [ miniguest.nixosModules.miniguest (./guests + "/${name}") ];
