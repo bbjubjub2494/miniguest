@@ -6,7 +6,6 @@
   ];
 
   # Use miniguest
-  boot.loader.grub.enable = false;
   boot.miniguest.enable = true;
 
   fileSystems."/" = {

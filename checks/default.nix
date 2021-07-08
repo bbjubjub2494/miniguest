@@ -8,7 +8,6 @@ let
       self.nixosModules.miniguest
       {
         boot.miniguest.enable = true;
-        boot.loader.grub.enable = false;
         fileSystems."/" = {
           device = "none";
           fsType = "tmpfs";

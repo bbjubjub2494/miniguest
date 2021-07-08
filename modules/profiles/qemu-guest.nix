@@ -1,3 +1,5 @@
+{ lib, ... }:
+
 # Mix-in for a QEMU or KVM mini-guest.
 
 {
@@ -15,4 +17,6 @@
   boot.initrd.postMountCommands = ''
     cp -PT /mnt-root/boot/init /mnt-root/init
   '';
+
+  boot.loader.grub.enable = lib.mkDefault false;
 }
