@@ -15,19 +15,11 @@
         description = "Example guest configurations";
         path = ./template;
       };
-    } // simpleFlake {
-      inherit self nixpkgs;
-      name = "miniguest";
-      systems = defaultSystems;
-      preOverlays = [ devshell.overlay ];
-      overlay = final: prev: {
-        miniguest = rec {
-          miniguest = final.callPackage ./miniguest { };
-          defaultPackage = miniguest;
-          defaultApp = mkApp { drv = miniguest; };
-          devShell = final.devshell.fromTOML ./devshell.toml;
-          checks = import ./checks inputs final prev;
-        };
-      };
-    };
+    } // eachDefaultSystem (system: rec {
+      packages.miniguest = nixpkgs.legacyPackages.${system}.callPackage ./miniguest { };
+      defaultPackage = packages.miniguest;
+      defaultApp = mkApp { drv = packages.miniguest; };
+      devShell = devshell.legacyPackages.${system}.fromTOML ./devshell.toml;
+      checks = import ./checks inputs system;
+    });
 }

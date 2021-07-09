@@ -1,9 +1,8 @@
 inputs@{ self, nixpkgs, ... }:
-final: prev:
-
+system:
 let
   kvm_guest = nixpkgs.lib.nixosSystem {
-    inherit (final) system;
+    inherit system;
     modules = [
       self.nixosModules.miniguest
       {
@@ -17,7 +16,7 @@ let
     ];
   };
   lxc_guest = nixpkgs.lib.nixosSystem {
-    inherit (final) system;
+    inherit system;
     modules = [
       self.nixosModules.miniguest
       {
@@ -27,7 +26,8 @@ let
     ];
   };
 in
-final.lib.optionalAttrs final.stdenv.isLinux {
+with nixpkgs.legacyPackages.${system};
+lib.optionalAttrs stdenv.isLinux {
   build_kvm_guest = kvm_guest.config.system.build.miniguest;
   build_lxc_guest = lxc_guest.config.system.build.miniguest;
 }
