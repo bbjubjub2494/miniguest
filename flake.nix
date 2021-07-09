@@ -7,7 +7,7 @@
   outputs = inputs@{ self, nixpkgs, devshell, flake-utils }:
     with flake-utils.lib;
     {
-      nixosModules.miniguest = import modules/miniguest.nix inputs;
+      nixosModules.miniguest = import modules/miniguest.nix;
       overlay = final: prev: {
         miniguest = final.callPackage ./miniguest { };
       };
