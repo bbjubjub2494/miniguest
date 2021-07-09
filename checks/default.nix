@@ -22,6 +22,7 @@ let
       {
         boot.miniguest.enable = true;
         boot.miniguest.hypervisor = "lxc";
+        boot.miniguest.storeCorruptionWarning = false;
       }
     ];
   };

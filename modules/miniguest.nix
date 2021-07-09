@@ -10,6 +10,11 @@ with lib;
         default = "qemu";
         type = types.enum [ "qemu" "lxc" ];
       };
+      storeCorruptionWarning = mkOption {
+        description = "Whether to display a warning about container guests being able to corrupt the Nix store.";
+        default = true;
+        type = types.bool;
+      };
     };
   };
 
