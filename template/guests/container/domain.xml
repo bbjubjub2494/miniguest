@@ -9,6 +9,10 @@
   <type arch="x86_64">exe</type>
   <init>/boot/init</init>
  </os>
+ <idmap>
+  <uid start='0' target='1000000' count='10000'/>
+  <gid start='0' target='1000000' count='10000'/>
+ </idmap>
  <memory unit="GiB">1</memory>
  <resource>
   <partition>/machine</partition>
