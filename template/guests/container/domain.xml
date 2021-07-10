@@ -8,6 +8,10 @@
  <os>
   <type arch="x86_64">exe</type>
   <init>/boot/init</init>
+  <idmap>
+   <uid start='0' target='1000' count='10'/>
+   <gid start='0' target='1000' count='10'/>
+  </idmap>
  </os>
  <memory unit="GiB">1</memory>
  <resource>
