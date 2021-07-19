@@ -6,7 +6,7 @@ with lib;
 let
   cfg = config.boot.miniguest;
 in
-mkIf (cfg.enable && cfg.hypervisor == "qemu") {
+mkIf (cfg.enable && cfg.guestType == "qemu") {
   fileSystems."/boot" = {
     device = "boot";
     fsType = "9p";

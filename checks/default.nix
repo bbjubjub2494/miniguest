@@ -21,7 +21,7 @@ let
       self.nixosModules.miniguest
       {
         boot.miniguest.enable = true;
-        boot.miniguest.hypervisor = "lxc";
+        boot.miniguest.guestType = "lxc";
         boot.miniguest.storeCorruptionWarning = false;
       }
     ];
