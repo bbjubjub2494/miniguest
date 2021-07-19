@@ -3,7 +3,7 @@
 {
   # Use miniguest
   boot.miniguest.enable = true;
-  boot.miniguest.hypervisor = "lxc";
+  boot.miniguest.guestType = "lxc";
 
   users.users.root.hashedPassword = "";
 }

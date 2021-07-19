@@ -5,7 +5,7 @@
 with lib;
 let cfg = config.boot.miniguest;
 in
-mkIf (cfg.enable && cfg.hypervisor == "lxc") {
+mkIf (cfg.enable && cfg.guestType == "lxc") {
   warnings = lib.optional (cfg.storeCorruptionWarning) ''
     Running a guest in LXC without enabling UID mapping or otherwise confining the guest's superuser can result in host store corruption!
     Double-check your container settings!
