@@ -28,7 +28,10 @@ let
   mkTest = { name, testScript }: nixosTest {
     inherit name;
     machine = {
-      environment.systemPackages = [ miniguest ];
+      environment.systemPackages = [
+        # wrapper clears PATH to check for implicit dependencies
+        (writeShellScriptBin "miniguest" ''PATH= exec ${miniguest}/bin/miniguest "$@"'')
+      ];
       environment.etc."pinned-nixpkgs".source = pinned-nixpkgs;
       system.extraDependencies = [ (import pinned-nixpkgs { inherit system; }).stdenvNoCC ];
       virtualisation.memorySize = 1024;

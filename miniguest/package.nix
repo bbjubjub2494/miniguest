@@ -12,7 +12,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-{ lib, stdenv, argbash, bash, nixFlakes, shellcheck, makeWrapper }:
+{ lib, stdenv, argbash, bash, coreutils, nixFlakes, shellcheck, makeWrapper }:
 
 stdenv.mkDerivation {
   name = "miniguest";
@@ -34,8 +34,9 @@ stdenv.mkDerivation {
     mkdir -p $out/{libexec/miniguest,bin}
       mv *.bash $out/libexec/miniguest
       chmod +x $out/libexec/miniguest/main.bash
+      # keep PATH open ended since Nix pulls from the environment e.g. git
       makeWrapper $out/libexec/miniguest/main.bash $out/bin/miniguest \
-        --prefix PATH ":" "$out/libexec/miniguest"
+        --prefix PATH ":" "$out/libexec/miniguest:${coreutils}/bin"
   '';
 
   doInstallCheck = true;
