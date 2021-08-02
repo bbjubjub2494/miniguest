@@ -12,12 +12,12 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-{ lib, stdenvNoCC, argbash, bash, coreutils, nixFlakes, shellcheck, makeWrapper }:
+{ lib, stdenvNoCC, argbash, bash, coreutils, miniguest-lxc-template, nixFlakes, shellcheck, makeWrapper }:
 
 stdenvNoCC.mkDerivation {
   name = "miniguest";
   src = ./.;
-  inherit bash nixFlakes;
+  inherit bash miniguest-lxc-template nixFlakes;
 
   nativeBuildInputs = [ argbash makeWrapper ];
 
