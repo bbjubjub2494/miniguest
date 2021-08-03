@@ -1,34 +1,4 @@
-inputs@{ self, nixpkgs, ... }:
-system:
-let
-  kvm_guest = nixpkgs.lib.nixosSystem {
-    inherit system;
-    modules = [
-      self.nixosModules.miniguest
-      {
-        boot.miniguest.enable = true;
-        fileSystems."/" = {
-          device = "none";
-          fsType = "tmpfs";
-          options = [ "defaults" "mode=755" ];
-        };
-      }
-    ];
-  };
-  lxc_guest = nixpkgs.lib.nixosSystem {
-    inherit system;
-    modules = [
-      self.nixosModules.miniguest
-      {
-        boot.miniguest.enable = true;
-        boot.miniguest.guestType = "lxc";
-        boot.miniguest.storeCorruptionWarning = false;
-      }
-    ];
-  };
-in
-with nixpkgs.legacyPackages.${system};
-lib.optionalAttrs stdenv.isLinux {
-  build_kvm_guest = kvm_guest.config.system.build.miniguest;
-  build_lxc_guest = lxc_guest.config.system.build.miniguest;
-}
+inputs: system:
+
+import ./simple-guests.nix inputs system //
+import ./imperative-management.nix inputs system
