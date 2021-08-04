@@ -25,14 +25,18 @@ nix="$_arg_nix"
 
 source functions.bash
 
+set -- "${_arg_leftovers[@]}" # reset parameters to subcommand arguments
 case "${_arg_command:?}" in
 install)
-	source install.bash "${_arg_leftovers[@]}"
+	source install.bash
 	;;
 upgrade)
-	source upgrade.bash "${_arg_leftovers[@]}"
+	source upgrade.bash
 	;;
 remove)
-	source remove.bash "${_arg_leftovers[@]}"
+	source remove.bash
+	;;
+create)
+	source create.bash
 	;;
 esac
