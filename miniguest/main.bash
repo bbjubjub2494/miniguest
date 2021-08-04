@@ -25,6 +25,9 @@ nix="$_arg_nix"
 
 source functions.bash
 
+set -- "${_arg_leftovers[@]}" # reset parameters to subcommand arguments
 if test "${_arg_command:?}" = install; then
-	source install.bash "${_arg_leftovers[@]}"
+	source install.bash
+elif test "${_arg_command:?}" = create; then
+	source create.bash
 fi
