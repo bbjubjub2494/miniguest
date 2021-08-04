@@ -17,10 +17,10 @@ stdenv.mkDerivation {
   '';
 
   installPhase = ''
-    mkdir -p $out/{lib,bin}
+    mkdir -p $out/{libexec/miniguest,bin}
       mv main.bash $out/bin/miniguest
       chmod +x $out/bin/miniguest
-      mv *.bash $out/lib
+      mv *.bash $out/libexec/miniguest
   '';
 
   doInstallCheck = true;
