@@ -1,4 +1,4 @@
-source @out@/lib/install_arg.bash
+source @out@/libexec/miniguest/install_arg.bash
 
 parse_flake_reference "$_arg_flake_reference"
 
