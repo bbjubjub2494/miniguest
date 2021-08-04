@@ -17,7 +17,8 @@
 stdenvNoCC.mkDerivation {
   name = "miniguest";
   src = ./.;
-  inherit bash miniguest-lxc-template nixFlakes;
+  inherit bash nixFlakes;
+  lxc_template = miniguest-lxc-template;
 
   nativeBuildInputs = [ argbash makeWrapper ];
 
