@@ -17,23 +17,26 @@
 
   inputs.devshell.url = "github:numtide/devshell";
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.tool.url = "path:./miniguest";
+  inputs.modules.url = "path:./modules";
 
-  outputs = inputs@{ self, nixpkgs, devshell, flake-utils }:
+  outputs = inputs@{ self, nixpkgs, modules, tool, devshell, flake-utils }:
     with flake-utils.lib;
     {
-      nixosModules.miniguest = import modules/miniguest.nix;
-      overlay = final: prev: {
-        miniguest = final.callPackage ./miniguest { };
-      };
+      nixosModules.miniguest = modules.nixosModule;
+      inherit (tool) overlay;
       defaultTemplate = {
         description = "Example guest configurations";
         path = ./template;
       };
-    } // eachDefaultSystem (system: rec {
-      packages.miniguest = nixpkgs.legacyPackages.${system}.callPackage ./miniguest { };
-      defaultPackage = packages.miniguest;
-      defaultApp = mkApp { drv = packages.miniguest; };
-      devShell = devshell.legacyPackages.${system}.fromTOML ./devshell.toml;
-      checks = import ./checks inputs system;
-    });
+    } // eachDefaultSystem (system:
+      let pkgs = import nixpkgs { inherit system; overlays = [ tool.overlay ]; };
+      in
+      {
+        packages.miniguest = pkgs.miniguest;
+        defaultPackage = pkgs.miniguest;
+        defaultApp = mkApp { drv = pkgs.miniguest; };
+        devShell = devshell.legacyPackages.${system}.fromTOML ./devshell.toml;
+        checks = import ./checks inputs system;
+      });
 }
