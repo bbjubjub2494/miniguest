@@ -1,11 +1,11 @@
-{ stdenv, argbash, bash, nixFlakes, shellcheck }:
+{ stdenv, argbash, bash, nixFlakes, shellcheck, makeWrapper }:
 
 stdenv.mkDerivation {
   name = "miniguest";
   src = ./.;
   inherit bash nixFlakes;
 
-  nativeBuildInputs = [ argbash ];
+  nativeBuildInputs = [ argbash makeWrapper ];
 
   buildPhase = ''
     for f in *.bash; do
@@ -18,9 +18,10 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/{libexec/miniguest,bin}
-      mv main.bash $out/bin/miniguest
-      chmod +x $out/bin/miniguest
       mv *.bash $out/libexec/miniguest
+      chmod +x $out/libexec/miniguest/main.bash
+      makeWrapper $out/libexec/miniguest/main.bash $out/bin/miniguest \
+        --prefix PATH ":" "$out/libexec/miniguest"
   '';
 
   doInstallCheck = true;

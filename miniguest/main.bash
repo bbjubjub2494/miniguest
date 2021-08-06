@@ -1,13 +1,13 @@
 #! @bash@/bin/sh
 
-source @out@/libexec/miniguest/main_arg.bash
+source main_arg.bash
 
 guests_dir="$_arg_guests_dir"
 profiles_dir="/nix/var/nix/profiles/miniguest-profiles"
 nix="$_arg_nix"
 
-source @out@/libexec/miniguest/functions.bash
+source functions.bash
 
 if test "${_arg_command:?}" = install; then
-	source @out@/libexec/miniguest/install.bash "${_arg_leftovers[@]}"
+	source install.bash "${_arg_leftovers[@]}"
 fi
