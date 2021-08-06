@@ -19,7 +19,7 @@ mkIf (cfg.enable && cfg.guestType == "qemu") {
   };
 
   boot.initrd.postMountCommands = ''
-    cp -PT /mnt-root/boot/init /mnt-root/init
+    test "$stage2Init" = /init && stage2Init=/boot/init
   '';
 
   boot.loader.grub.enable = mkDefault false;
