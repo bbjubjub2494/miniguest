@@ -30,17 +30,6 @@
         "type": "github"
       }
     },
-    "modules": {
-      "locked": {
-        "narHash": "sha256-gKJLb6gPBVJs3CcH+HJ5VD5cHeBNWmyf3dQSyZTtQhs=",
-        "path": "./modules",
-        "type": "path"
-      },
-      "original": {
-        "path": "./modules",
-        "type": "path"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1624553300,
@@ -59,20 +48,7 @@
       "inputs": {
         "devshell": "devshell",
         "flake-utils": "flake-utils",
-        "modules": "modules",
-        "nixpkgs": "nixpkgs",
-        "tool": "tool"
-      }
-    },
-    "tool": {
-      "locked": {
-        "narHash": "sha256-xLuoFNwGQ6kkaB86KzY5CTPk+F1xMxGY6+KkGnvAIPQ=",
-        "path": "./miniguest",
-        "type": "path"
-      },
-      "original": {
-        "path": "./miniguest",
-        "type": "path"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

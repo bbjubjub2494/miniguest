@@ -17,20 +17,21 @@
 
   inputs.devshell.url = "github:numtide/devshell";
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.tool.url = "path:./miniguest";
-  inputs.modules.url = "path:./modules";
 
-  outputs = inputs@{ self, nixpkgs, modules, tool, devshell, flake-utils }:
+  outputs = inputs@{ self, nixpkgs, devshell, flake-utils }:
     with flake-utils.lib;
+    let
+      overlay = import miniguest/overlay.nix;
+    in
     {
-      nixosModules.miniguest = modules.nixosModule;
-      inherit (tool) overlay;
+      nixosModules.miniguest = import modules/miniguest.nix;
+      inherit overlay;
       defaultTemplate = {
         description = "Example guest configurations";
         path = ./template;
       };
     } // eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; overlays = [ tool.overlay ]; };
+      let pkgs = import nixpkgs { inherit system; overlays = [ overlay ]; };
       in
       {
         packages.miniguest = pkgs.miniguest;
