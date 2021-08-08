@@ -75,4 +75,22 @@ lib.optionalAttrs stdenv.isLinux {
       """)
     '';
   };
+
+  remove_dummy = mkTest {
+    name = "miniguest-remove-dummy";
+    testScript = ''
+      machine.succeed("""
+        miniguest install /tmp/flake1#dummy
+      """)
+      machine.succeed("""
+        miniguest remove dummy
+      """)
+      machine.succeed("""
+        test ! -e /etc/miniguests/nonexistent
+      """)
+      machine.succeed("""
+        test ! -e /nix/var/nix/miniguest-profiles/nonexistent
+      """)
+    '';
+  };
 }
