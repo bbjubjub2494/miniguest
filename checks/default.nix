@@ -16,4 +16,5 @@ inputs: system:
 
 import ./simple-guests.nix inputs system //
 import ./declarative-management.nix inputs system //
-import ./imperative-management.nix inputs system
+import ./imperative-management.nix inputs system //
+import ./templates.nix inputs system
