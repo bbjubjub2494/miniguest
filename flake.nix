@@ -24,7 +24,8 @@
       overlay = import miniguest/overlay.nix;
     in
     {
-      nixosModules.miniguest = import modules/miniguest.nix;
+      nixosModules.core = import ./core;
+      nixosModules.declarative = import ./declarative inputs;
       inherit overlay;
       defaultTemplate = {
         description = "Example guest configurations";
