@@ -12,9 +12,9 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-{ lib, stdenv, argbash, bash, coreutils, nixFlakes, shellcheck, makeWrapper }:
+{ lib, stdenvNoCC, argbash, bash, coreutils, nixFlakes, shellcheck, makeWrapper }:
 
-stdenv.mkDerivation {
+stdenvNoCC.mkDerivation {
   name = "miniguest";
   src = ./.;
   inherit bash nixFlakes;
