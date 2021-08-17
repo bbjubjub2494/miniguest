@@ -1,4 +1,9 @@
 # Low-footprint NixOS images
+![Latest release](https://img.shields.io/github/v/release/bbjubjub2494/miniguest)
+![License](https://img.shields.io/github/license/bbjubjub2494/miniguest)
+
+![GitHub contributors](https://img.shields.io/github/contributors/bbjubjub2494/miniguest?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/bbjubjub2494/miniguest?style=social)
 
 Miniguest makes lightweight [NixOS] guest images for popular virtualisation
 tools.  The guest systems live entirely on the host's Nix store.  The host
