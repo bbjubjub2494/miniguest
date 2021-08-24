@@ -20,7 +20,6 @@ let
         miniguests.container.configuration = {
           boot.miniguest.enable = true;
           boot.miniguest.guestType = "lxc";
-          boot.miniguest.storeCorruptionWarning = false;
         };
       }
     ];

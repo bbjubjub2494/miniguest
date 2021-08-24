@@ -37,7 +37,6 @@ let
       {
         boot.miniguest.enable = true;
         boot.miniguest.guestType = "lxc";
-        boot.miniguest.storeCorruptionWarning = false;
       }
     ];
   };
