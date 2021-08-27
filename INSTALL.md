@@ -18,3 +18,5 @@ A Nixpkgs overlay is also available
 ```nix
 (import (builtins.fetchGit https://github.com/bbjubjub2494/miniguest)).overlay
 ```
+
+For overlays in flakes, use the url `github:bbjubjub2494/miniguest?dir=tool`.
