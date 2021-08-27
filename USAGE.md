@@ -2,7 +2,10 @@
 ## Imperative guests
 
 A guest declaration must live in a Nix Flake.  To get started, you can use the
-flake template.
+flake template with the following shortcut:
+```sh
+miniguest template my-guests/
+```
 
 To build and deploy a guest, run
 ```sh

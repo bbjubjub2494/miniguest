@@ -39,4 +39,7 @@ remove)
 create)
 	source create.bash
 	;;
+template)
+	source template.bash
+	;;
 esac
