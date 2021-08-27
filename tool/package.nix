@@ -15,7 +15,8 @@
 { lib, stdenvNoCC, argbash, bash, coreutils, miniguest-lxc-template, nixFlakes, shellcheck, makeWrapper }:
 
 stdenvNoCC.mkDerivation {
-  name = "miniguest";
+  pname = "miniguest";
+  version = "0.1";
   src = ./.;
   inherit bash nixFlakes;
   lxc_template = miniguest-lxc-template;
