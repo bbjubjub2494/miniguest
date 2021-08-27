@@ -51,5 +51,6 @@ stdenvNoCC.mkDerivation {
   meta = with lib; {
     description = "The companion tool for Miniguest";
     license = licenses.gpl3Plus;
+    maintainers = with maintainers; [ bbjubjub2494 ];
   };
 }
