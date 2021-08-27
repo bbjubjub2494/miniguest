@@ -21,7 +21,7 @@
   outputs = inputs@{ self, nixpkgs, devshell, flake-utils }:
     with flake-utils.lib;
     let
-      overlay = import miniguest/overlay.nix;
+      overlay = import tool/overlay.nix;
     in
     {
       nixosModules.core = import ./core;
