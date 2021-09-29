@@ -18,11 +18,12 @@
 source install_arg.bash
 
 parse_flake_reference "$_arg_flake_reference"
+profile_name="${_arg_name:-$guest_name}"
 
 mkdir -p "$guests_dir" || die "" $?
 mkdir -p "$profiles_dir" || die "" $?
 
-reset_profile "$guest_name" # FIXME: need an atomic reset-and-install
-install_profile "$guest_name" "$flake#nixosConfigurations.$guest_name.config.system.build.miniguest"
+reset_profile "$profile_name" # FIXME: need an atomic reset-and-install
+install_profile "$profile_name" "$flake#nixosConfigurations.$guest_name.config.system.build.miniguest"
 
-have_control_of_symlink "$guest_name" && ln -sf "$profiles_dir/$guest_name" "$guests_dir"
+have_control_of_symlink "$profile_name" && ln -sf "$profiles_dir/$profile_name" "$guests_dir"

@@ -61,6 +61,21 @@ lib.optionalAttrs stdenv.isLinux {
     '';
   };
 
+  install_rename = mkTest {
+    name = "miniguest-install-rename";
+    testScript = ''
+      machine.succeed("""
+        miniguest install --name=renamed_dummy /tmp/flake1#dummy
+      """)
+      assert "foo" in machine.succeed("""
+        cat /etc/miniguests/renamed_dummy/boot/init
+      """)
+      assert "/nix/var/nix/profiles/miniguest-profiles/renamed_dummy\n" == machine.succeed("""
+        readlink /etc/miniguests/renamed_dummy
+      """)
+    '';
+  };
+
   install_nonexistent = mkTest {
     name = "miniguest-install-nonexistent";
     testScript = ''
