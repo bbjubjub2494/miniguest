@@ -15,5 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Miniguest.  If not, see <https://www.gnu.org/licenses/>.
 
+# ARG_HELP(build the guest and install it into a nix profile)
 # ARG_POSITIONAL_SINGLE(flake-reference, guest to build)
+# ARG_OPTIONAL_SINGLE(name, n, name of the profile)
 # ARGBASH_GO
