@@ -13,13 +13,13 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 inputs:
-{ lib, ... }:
+{ config, lib, ... }:
 with lib;
 {
   options.miniguests = mkOption {
     description = "A set of NixOS configurations to be built and made available as miniguests.";
     default = { };
-    type = types.attrsOf (types.submodule ({ config, options, name, ... }:
+    type = types.attrsOf (types.submodule ({ options, name, ... }:
       {
         options = {
           configuration = mkOption {
@@ -31,6 +31,14 @@ with lib;
               name = "Toplevel NixOS config";
               merge = lib.options.mergeOneOption;
             };
+          };
+          system = mkOption {
+            description = ''
+              specifies the nix platform type for which the guest should be built.
+            '';
+            type = types.str;
+            default = config.nixpkgs.initialSystem;
+            defaultText = literalDocBook "same as the host";
           };
         };
       }));
