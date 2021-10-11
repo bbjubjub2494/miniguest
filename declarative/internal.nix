@@ -16,9 +16,9 @@ inputs@{ nixpkgs, ... }:
 { baseModules, config, lib, pkgs, specialArgs, ... }:
 let
   hostPkgs = pkgs; # give the guest the packages from the host configuration
-  mkGuest = name: configuration: nixpkgs.lib.nixosSystem {
+  mkGuest = name: configuration: system: nixpkgs.lib.nixosSystem {
     inherit lib baseModules specialArgs;
-    system = config.nixpkgs.initialSystem;
+    inherit system;
     modules = [
       configuration
       ../core
@@ -34,7 +34,7 @@ lib.mkIf (config.miniguests != { }) {
   environment.etc =
     with lib.attrsets;
     lib.flip mapAttrs' config.miniguests
-      (name: { configuration, ... }: nameValuePair "miniguests/${name}" {
-        source = (mkGuest name configuration).config.system.build.miniguest;
+      (name: { configuration, system, ... }: nameValuePair "miniguests/${name}" {
+        source = (mkGuest name configuration system).config.system.build.miniguest;
       });
 }
