@@ -29,8 +29,9 @@ let
     inherit name;
     machine = {
       environment.systemPackages = [
+        git
         # wrapper clears PATH to check for implicit dependencies
-        (writeShellScriptBin "miniguest" ''PATH= exec ${miniguest}/bin/miniguest "$@"'')
+        (writeShellScriptBin "miniguest" ''PATH=${git}/bin exec ${miniguest}/bin/miniguest "$@"'')
       ];
       environment.etc."pinned-nixpkgs".source = pinned-nixpkgs;
       system.extraDependencies = [ (import pinned-nixpkgs { inherit system; }).stdenvNoCC ];
@@ -56,6 +57,33 @@ lib.optionalAttrs stdenv.isLinux {
         miniguest install /tmp/flake1#dummy
       """)
       assert "foo" in machine.succeed("""
+        cat /etc/miniguests/dummy/boot/init
+      """)
+    '';
+  };
+
+upgrade_dummy = mkTest {
+    name = "miniguest-upgrade-dummy";
+    testScript = ''
+      machine.succeed("""
+        cd /tmp/flake1
+        git init
+        git config user.name Miniguest
+        git config user.email miniguest@example.org
+        git add .
+        git commit -m init
+      """)
+      machine.succeed("""
+        miniguest install /tmp/flake1#dummy
+      """)
+      machine.succeed("""
+        sed -i s/foo/bar/ /tmp/flake1/flake.nix
+        git -C /tmp/flake1 commit -am upgrade
+      """)
+      machine.succeed("""
+        miniguest upgrade dummy
+      """)
+      assert "bar" in machine.succeed("""
         cat /etc/miniguests/dummy/boot/init
       """)
     '';
