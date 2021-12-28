@@ -12,6 +12,11 @@ To build and deploy a guest, run
 sudo miniguest install «flakeRef»#«guestName»
 ```
 
+To give the guest a different name than the one it has in the flake, use
+```sh
+sudo miniguest install -n «guestName» «flakeRef»#«guestNameInFlake»
+```
+
 When built, an imperative guest live in its own nix profile.  It must be
 updated manually, and old generations can be garbage collected.  You can update
 with
@@ -47,6 +52,10 @@ guests like
   };
 }
 ```
+
+By default, guests are built for the same platform as their host. If you wish
+to create a guest for a different platform, you should use the
+`miniguest.«guestName».system` option.
 
 ## Configuring the hypervisor
 
