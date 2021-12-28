@@ -39,7 +39,7 @@ function install_profile {
 function upgrade_profile {
 	[[ $# -eq 1 ]] || die "$FUNCNAME: wrong number of arguments!"
 	local guest_name="$1"
-	run_nix profile upgrade --profile "$guests_dir/$guest_name" ||
+	run_nix profile upgrade --profile "$profiles_dir/$guest_name" ||
 		die "unable to upgrade $guest_name!" $?
 }
 
