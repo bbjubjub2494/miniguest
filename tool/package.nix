@@ -46,7 +46,7 @@ stdenvNoCC.mkDerivation {
   installCheckInputs = [ shellcheck ];
 
   installCheckPhase = ''
-    shellcheck -x -s bash $out/bin/miniguest
+    shellcheck -e SC2123 -x -s bash $out/bin/miniguest
   '';
 
   meta = with lib; {
