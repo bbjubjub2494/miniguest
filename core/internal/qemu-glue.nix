@@ -32,6 +32,8 @@ mkIf (cfg.enable && cfg.guestType == "qemu") {
     fsType = "9p";
   };
 
+  boot.initrd.availableKernelModules = [ "virtio_pci" "9p" "9pnet_virtio" ];
+
   boot.initrd.postMountCommands = ''
     test "$stage2Init" = /init && stage2Init=/boot/init
   '';
