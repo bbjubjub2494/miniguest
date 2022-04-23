@@ -1,8 +1,9 @@
 let
-  rev = "99f1c2157fba4bfe6211a321fd0ee43199025dbf";
+  lock = builtins.fromJSON (builtins.readFile ../flake.lock);
+  inherit (lock.nodes.flake-compat.locked) rev narHash;
   flake-compat = fetchTarball {
     url = "https://github.com/edolstra/flake-compat/archive/${rev}.tar.gz";
-    sha256 = "0x2jn3vrawwv9xp15674wjz9pixwjyj3j771izayl962zziivbx2";
+    sha256 = narHash;
   };
 in
 import flake-compat { src = ./..; }
