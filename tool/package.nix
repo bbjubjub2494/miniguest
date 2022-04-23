@@ -17,7 +17,7 @@
 stdenvNoCC.mkDerivation {
   pname = "miniguest";
   version = "0.1.1";
-  src = ./.;
+  src = builtins.path { name = "source"; path = ./.; };
   inherit bash nixFlakes;
   lxc_template = miniguest-lxc-template;
 
