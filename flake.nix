@@ -12,33 +12,45 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+# The flake file is the entry point for nix commands
 {
   description = "guest NixOS images with minimal footprint";
 
+  # Inputs are how Nix can use code from outside the flake during evaluation.
   inputs.devshell.url = "github:numtide/devshell";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.fup.url = "github:gytis-ivaskevicius/flake-utils-plus/v1.3.1";
+  inputs.flake-compat.url = "github:edolstra/flake-compat";
+  inputs.flake-compat.flake = false;
 
-  outputs = inputs@{ self, nixpkgs, devshell, flake-utils }:
-    with flake-utils.lib;
-    let
-      overlay = import tool/overlay.nix;
-    in
-    {
-      nixosModules.core = import ./core;
-      nixosModules.declarative = import ./declarative inputs;
-      inherit overlay;
-      defaultTemplate = {
-        description = "Example guest configurations";
-        path = ./template;
+  # Outputs are the public-facing interface to the flake.
+  outputs = inputs@{ self, devshell, fup, nixpkgs, ... }: fup.lib.mkFlake {
+
+    inherit self inputs;
+
+    sharedOverlays = [
+      devshell.overlay
+      self.overlay
+    ];
+
+    overlay = import tool/overlay.nix;
+
+    nixosModules.core = import ./core;
+    nixosModules.declarative = import ./declarative inputs;
+
+    defaultTemplate = {
+      description = "Example guest configurations";
+      path = ./template;
+    };
+
+    outputsBuilder = channels: rec {
+      packages = rec {
+        inherit (channels.nixpkgs) miniguest;
+        default = miniguest;
       };
-    } // eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; overlays = [ overlay ]; };
-      in
-      {
-        packages.miniguest = pkgs.miniguest;
-        defaultPackage = pkgs.miniguest;
-        defaultApp = mkApp { drv = pkgs.miniguest; };
-        devShell = devshell.legacyPackages.${system}.fromTOML ./devshell.toml;
-        checks = import ./checks inputs system;
-      });
+      defaultPackage = packages.default;
+      defaultApp = fup.lib.mkApp { drv = packages.default; };
+      devShell = channels.nixpkgs.callPackage nix/devshell.nix { };
+      checks = import ./checks inputs channels.nixpkgs.system;
+    };
+  };
 }
