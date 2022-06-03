@@ -29,8 +29,7 @@ let
     inherit name;
     nodes.machine = {
       environment.systemPackages = [
-        # wrapper clears PATH to check for implicit dependencies
-        (writeShellScriptBin "miniguest" ''PATH= exec ${miniguest}/bin/miniguest "$@"'')
+        miniguest
       ];
       system.extraDependencies = [ pinned-nixpkgs (import pinned-nixpkgs { inherit system; }).stdenvNoCC ];
       virtualisation.memorySize = 1024;
@@ -64,7 +63,7 @@ lib.optionalAttrs stdenv.isLinux {
     name = "miniguest-install-rename";
     testScript = ''
       machine.succeed("""
-        miniguest install --name=renamed_dummy /tmp/flake1#dummy
+        miniguest install --name renamed_dummy /tmp/flake1#dummy
       """)
       assert "foo" in machine.succeed("""
         cat /etc/miniguests/renamed_dummy/boot/init

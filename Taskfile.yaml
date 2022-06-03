@@ -1,0 +1,30 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    deps: [ 'build' ]
+
+  setup:
+    cmds:
+      - meson setup tool/ build/
+    status:
+      - test -d build/
+
+  build:
+    deps: [ 'setup' ]
+    dir: build/
+    cmds:
+      - meson compile
+
+  fmt:
+    - nixpkgs-fmt .
+    - ninja -C build/ clang-format
+
+  lint:
+    - ninja -C build/ clang-tidy
+    - iwyu_tool.py -p=build/
+
+  clean:
+    - git clean -Xdf build/

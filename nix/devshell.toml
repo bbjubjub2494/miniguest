@@ -1,29 +1,49 @@
-imports = [ "git.hooks" ]
+imports = [
+  "git.hooks",
+  "language.c",
+  "set-boost-root.nix",
+]
 
 [devshell]
 name = "miniguest"
-
-[[commands]]
-package = "bash"
+packages = [
+  "ninja", # for meson
+]
 
 [[commands]]
 package = "nixFlakes"
+
+[[commands]]
+name = "task"
+package = "go-task"
+
+[[commands]]
+package = "meson"
 
 [[commands]]
 package = "nixpkgs-fmt"
 category = "formatters"
 
 [[commands]]
-package = "shfmt"
+name = "clang-format"
+package = "clang-tools"
 category = "formatters"
 
 [[commands]]
-package = "argbash"
-category = "preprocessors"
+name = "clang-tidy"
+package = "clang-tools"
+category = "linters"
 
 [[commands]]
-package = "shellcheck"
+package = "include-what-you-use"
 category = "linters"
+
+[language.c]
+includes = [
+  "boehmgc",
+  "nixFlakes",
+  "nlohmann_json",
+]
 
 [git.hooks]
 enable = true
@@ -41,5 +61,5 @@ function find_staged {
 }
 
 find_staged '*.nix' | xargs -r nixpkgs-fmt --check || exit
-find_staged '*.bash' | xargs -r shfmt -d -s || exit
+find_staged '*.hpp' '*.cpp' | xargs -r clang-format -n -Werror || exit
 """
