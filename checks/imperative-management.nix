@@ -32,8 +32,7 @@ let
         # wrapper clears PATH to check for implicit dependencies
         (writeShellScriptBin "miniguest" ''PATH= exec ${miniguest}/bin/miniguest "$@"'')
       ];
-      environment.etc."pinned-nixpkgs".source = pinned-nixpkgs;
-      system.extraDependencies = [ (import pinned-nixpkgs { inherit system; }).stdenvNoCC ];
+      system.extraDependencies = [ pinned-nixpkgs (import pinned-nixpkgs { inherit system; }).stdenvNoCC ];
       virtualisation.memorySize = 1024;
     };
     testScript = ''
@@ -43,7 +42,7 @@ let
         ${builtins.toJSON { inherit system; }}
       EOF
       # override nixpkgs
-      ${nixFlakes}/bin/nix --experimental-features "nix-command flakes" flake update /tmp/flake1 --override-input nixpkgs /etc/pinned-nixpkgs
+      ${nixFlakes}/bin/nix --experimental-features "nix-command flakes" flake update /tmp/flake1 --override-input nixpkgs ${pinned-nixpkgs}
       """);
     '' + testScript;
   };
