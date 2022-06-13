@@ -27,6 +27,8 @@ let
           fsType = "tmpfs";
           options = [ "defaults" "mode=755" ];
         };
+
+        system.stateVersion = "22.05";
       }
     ];
   };
@@ -37,6 +39,8 @@ let
       {
         boot.miniguest.enable = true;
         boot.miniguest.guestType = "lxc";
+
+        system.stateVersion = "22.05";
       }
     ];
   };
