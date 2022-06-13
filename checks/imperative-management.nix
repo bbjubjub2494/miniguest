@@ -27,7 +27,7 @@ let
 
   mkTest = { name, testScript }: nixosTest {
     inherit name;
-    machine = {
+    nodes.machine = {
       environment.systemPackages = [
         # wrapper clears PATH to check for implicit dependencies
         (writeShellScriptBin "miniguest" ''PATH= exec ${miniguest}/bin/miniguest "$@"'')
