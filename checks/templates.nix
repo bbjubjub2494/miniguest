@@ -7,7 +7,7 @@ in
 lib.optionalAttrs stdenv.isLinux {
   create_container = nixosTest {
     name = "miniguest-create-container";
-    machine = {
+    nodes.machine = {
       imports = [ self.nixosModules.declarative ];
 
       virtualisation.lxc.enable = true;
