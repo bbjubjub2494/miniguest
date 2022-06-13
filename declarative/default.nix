@@ -37,7 +37,7 @@ with lib;
               specifies the nix platform type for which the guest should be built.
             '';
             type = types.str;
-            default = config.nixpkgs.initialSystem;
+            default = config.nixpkgs.system;
             defaultText = literalDocBook "same as the host";
           };
         };
