@@ -21,6 +21,7 @@ add_project_arguments('-Wno-non-virtual-dtor', language: 'cpp')  # present in Ni
 
 src = [
   'main.cpp',
+  'build.cpp',
   'install.cpp',
   'remove.cpp',
   'upgrade.cpp',
