@@ -33,3 +33,17 @@ exe = executable('miniguest', src,
   install : true)
 
 test('basic', exe)
+
+# install completions
+install_data(
+  'misc/bash/completion.sh',
+  install_dir: get_option('datadir') / 'bash-completion/completions',
+  rename: ['miniguest'])
+install_data(
+  'misc/fish/completion.fish',
+  install_dir: get_option('datadir') / 'fish/vendor_completions.d',
+  rename: ['miniguest.fish'])
+install_data(
+  'misc/zsh/completion.zsh',
+  install_dir: get_option('datadir') / 'zsh/site-functions',
+  rename: ['_miniguest'])
