@@ -66,7 +66,7 @@ struct CmdBuild : virtual InstallableCommand {
                                      {installable});
 
     auto symlink = absPath("result");
-    store.dynamic_pointer_cast<LocalFSStore>()->addPermRoot(result[0], symlink);
+    //store.dynamic_pointer_cast<LocalFSStore>()->addPermRoot(result[0], symlink);
 
     // todo: link result
   }
