@@ -31,4 +31,8 @@ exe = executable('miniguest', src,
   dependencies : nixlibs,
   install : true)
 
+install_subdir('misc/bash-completion', install_dir: 'share')
+install_subdir('misc/fish', install_dir: 'share')
+install_subdir('misc/zsh', install_dir: 'share')
+
 test('basic', exe)

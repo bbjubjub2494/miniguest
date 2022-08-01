@@ -18,6 +18,7 @@
 
 #include "common.hpp"
 
+#include "command.hh"
 #include "error.hh"
 
 namespace fs = std::filesystem;
@@ -50,4 +51,12 @@ void Context::remove_symlink() {
     check_symlink(st);
 
   fs::remove(symlink_path);
+}
+
+void completeGuestName(size_t, std::string_view prefix) {
+  // FIXME: constant duplication
+  fs::path dir = "/etc/miniguests";
+
+  for (auto const &ent : fs::directory_iterator{dir})
+    completions->add(ent.path().filename());
 }

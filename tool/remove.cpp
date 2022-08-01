@@ -34,7 +34,11 @@ struct CmdRemove : virtual EvalCommand, virtual MixProfile {
   std::string guest_name;
 
   CmdRemove() {
-    expectArg("name", &guest_name);
+    expectArgs({
+        .label = "guest-name",
+        .handler = {&guest_name},
+        .completer = completeGuestName,
+    });
   }
 
   std::string description() override {
