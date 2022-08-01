@@ -17,13 +17,28 @@
 with lib;
 let
   cfg = config.boot.miniguest;
+  closureInfo = pkgs.closureInfo {
+    rootPaths = [ config.system.build.toplevel ];
+  };
 in
 mkIf cfg.enable {
   system.build.miniguest = pkgs.runCommand "miniguest-${config.system.name}-${config.system.nixos.label}" { } ''
       mkdir -p $out/boot
       ln -sT ${config.system.build.toplevel}/init $out/boot/init
+      cp ${closureInfo}/registration $out/boot/nix-path-registration
     ${lib.optionalString (cfg.guestType == "qemu")
     "cp -P ${config.system.build.toplevel}/{kernel,initrd} -t $out"
     }
+  '';
+
+  # based on nixos/modules/profiles/docker-container.nix
+  boot.postBootCommands = ''
+    # After booting, register the contents of the Nix store in the Nix
+    # database.
+    if [ -f /boot/nix-path-registration ]; then
+      ${config.nix.package.out}/bin/nix-store --load-db < /boot/nix-path-registration
+    fi
+    # nixos-rebuild also requires a "system" profile
+    ${config.nix.package.out}/bin/nix-env -p /nix/var/nix/profiles/system --set /run/current-system
   '';
 }
