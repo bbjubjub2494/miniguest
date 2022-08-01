@@ -69,6 +69,25 @@ void main0(int argc, char **argv) {
     std::cout << cmd.description() << std::endl;
     std::cout << cmd.doc() << std::endl;
     return;
+  } catch (UsageError &) {
+    if (!completions)
+      throw;
+  }
+  if (completions) {
+    switch (completionType) {
+    case ctNormal:
+      std::cout << "normal\n";
+      break;
+    case ctFilenames:
+      std::cout << "filenames\n";
+      break;
+    case ctAttrs:
+      std::cout << "attrs\n";
+      break;
+    }
+    for (auto &s : *completions)
+      std::cout << s.completion << "\t" << s.description << "\n";
+    return;
   }
   if (!args.command)
     throw UsageError("no subcommand specified");

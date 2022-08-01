@@ -43,3 +43,5 @@ private:
 
   void check_symlink(const std::filesystem::file_status &st);
 };
+
+void completeGuestName(size_t, std::string_view prefix);
