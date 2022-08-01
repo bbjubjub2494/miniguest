@@ -25,7 +25,7 @@
 #include "eval-cache.hh"
 
 #include <iostream>
-#include <vector>
+#include <map>
 
 using namespace nix;
 namespace fs = std::filesystem;
@@ -35,17 +35,6 @@ struct CmdCreate : virtual EvalCommand, virtual MixProfile {
   std::optional<std::string> hypervisor;
 
   const std::string set_color_red = "\e[1m\e[31m", reset_color = "\e(B\e[m";
-
-  CmdCreate() {
-    expectArg("name", &guest_name);
-    addFlag({
-        .longName = "type",
-        .shortName = 't',
-        .description = "hypervisor to configure (default: libvirt)",
-        .labels = {"hypervisor"},
-        .handler = {&hypervisor},
-    });
-  }
 
   std::string description() override {
     return "generate a command to configure the guest in the hypervisor";
@@ -58,52 +47,91 @@ struct CmdCreate : virtual EvalCommand, virtual MixProfile {
 	-t, --hypervisor: hypervisor to configure. Can be one of: 'libvirt' and 'lxc' (default: 'libvirt'))"";
   }
 
-  std::vector<std::string> prepare_command() {
-    if (*hypervisor == "libvirt")
-      return {
-          "virt-install -n " + guest_name,
-          "--connect qemu:///system",
-          "--os-variant nixos-unstable",
-          "--memory 1536",
-          "--disk none",
-          "--import",
-          "--boot kernel=/etc/miniguests/" + guest_name +
-              "/kernel,initrd=/etc/miniguests/" + guest_name + "/initrd",
-          "--filesystem /nix/store/,nix-store,readonly=yes,accessmode=squash",
-          "--filesystem /etc/miniguests/" + guest_name +
-              "/boot/,boot,readonly=yes,accessmode=squash",
-      };
-
-    else if (*hypervisor == "lxc")
-      return {
-          "lxc-create " + guest_name,
-          "-f extra-config",
-          "-t local --",
-          "-m @lxc_template@/meta.tar.xz",
-          "-f @lxc_template@/rootfs.tar.xz",
-      };
-    else
-      throw Error(2, "unknown hypervisor type");
-  }
-
-  void run(ref<Store> store) override {
-    if (!hypervisor)
-      hypervisor = "libvirt";
-
-    auto cmd = prepare_command();
-
-    if (*hypervisor == "lxc")
-      std::cout << "# " << set_color_red
-                << "WARNING: make sure root is uid-mapped, otherwise you might "
-                   "experience store corruption in the host!"
-                << reset_color << std::endl;
+  void display_command(Strings cmd) const {
     std::cout << "# Create " << guest_name << " using:" << std::endl;
     for (auto &line : cmd)
       std::cout << line << " \\\n  ";
     std::cout << std::endl;
   }
 
+  void display_command_libvirt() const {
+    Strings cmd{
+        "virt-install -n " + guest_name,
+        "--connect qemu:///system",
+        "--os-variant nixos-unstable",
+        "--memory 1536",
+        "--disk none",
+        "--import",
+        "--boot kernel=/etc/miniguests/" + guest_name +
+            "/kernel,initrd=/etc/miniguests/" + guest_name + "/initrd",
+        "--filesystem /nix/store/,nix-store,readonly=yes,accessmode=squash",
+        "--filesystem /etc/miniguests/" + guest_name +
+            "/boot/,boot,readonly=yes,accessmode=squash",
+    };
+    display_command(cmd);
+  }
+
+  void display_command_lxc() const {
+    Strings cmd = {
+        "lxc-create " + guest_name,
+        "-f extra-config",
+        "-t local --",
+        "-m @lxc_template@/meta.tar.xz",
+        "-f @lxc_template@/rootfs.tar.xz",
+    };
+    std::cout << "# " << set_color_red
+              << "WARNING: make sure root is uid-mapped, otherwise you might "
+                 "experience store corruption in the host!"
+              << reset_color << std::endl;
+    display_command(cmd);
+  }
+
+  struct HypervisorData {
+    void (CmdCreate::*display_commmand)() const;
+  };
+
+  static const std::map<std::string, HypervisorData> hypervisors;
+
+  static void completeHypervisor(size_t, std::string_view prefix) {
+    completionType = ctNormal;
+    for (auto [name, _] : hypervisors)
+      if (name.size() >= prefix.size() &&
+          std::string_view(name.data(), prefix.size()) == prefix)
+        completions->add(name);
+  }
+
+  CmdCreate() {
+    expectArgs({
+        .label = "guest-name",
+        .handler = {&guest_name},
+        .completer = completeGuestName,
+    });
+    addFlag({
+        .longName = "hypervisor",
+        .shortName = 't',
+        .description = "hypervisor to configure (default: libvirt)",
+        .labels = {"hypervisor"},
+        .handler = {&hypervisor},
+        .completer = &completeHypervisor,
+    });
+  }
+
+  void run(ref<Store> store) override {
+    if (!hypervisor)
+      hypervisor = "libvirt";
+
+    if (auto it = hypervisors.find(*hypervisor); it != hypervisors.end()) {
+      (this->*it->second.display_commmand)();
+    } else
+      throw Error(2, "unknown hypervisor type");
+  }
+
   virtual ~CmdCreate() = default;
+};
+
+const std::map<std::string, CmdCreate::HypervisorData> CmdCreate::hypervisors{
+    {"libvirt", {&CmdCreate::display_command_libvirt}},
+    {"lxc", {&CmdCreate::display_command_lxc}},
 };
 
 static auto rCmdCreate = registerCommand<CmdCreate>("create");
