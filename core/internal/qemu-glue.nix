@@ -1,4 +1,4 @@
-# Copyright 2021 Julie Bettens
+# Copyright 2022 Julie Bettens
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -23,16 +23,19 @@ in
 mkIf (cfg.enable && cfg.guestType == "qemu") {
   fileSystems."/boot" = {
     device = "boot";
-    fsType = "9p";
+    inherit (cfg.qemu) fsType;
     neededForBoot = true;
   };
 
   fileSystems."/nix/store" = {
     device = "nix-store";
-    fsType = "9p";
+    inherit (cfg.qemu) fsType;
   };
 
-  boot.initrd.availableKernelModules = [ "virtio_pci" "9p" "9pnet_virtio" ];
+  boot.initrd.availableKernelModules = getAttr cfg.qemu.fsType {
+    "9p" = [ "virtio_pci" "9p" "9pnet_virtio" ];
+    virtiofs = [ "virtio_pci" "virtiofs" ];
+  };
 
   boot.initrd.postMountCommands = ''
     test "$stage2Init" = /init && stage2Init=/boot/init
