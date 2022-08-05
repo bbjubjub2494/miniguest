@@ -24,6 +24,11 @@ with lib;
         default = "qemu";
         type = types.enum [ "qemu" "lxc" ];
       };
+      qemu.fsType = mkOption {
+        description = "Which shared file system to use to mount the host store";
+        default = "9p";
+        type = types.enum [ "9p" "virtiofs" ];
+      };
     };
   };
 
