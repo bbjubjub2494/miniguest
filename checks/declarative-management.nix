@@ -19,6 +19,18 @@ let
 
           system.stateVersion = "22.05";
         };
+        miniguests.virtual-machine-with-virtio.configuration = {
+          boot.miniguest.enable = true;
+          boot.miniguest.qemu.fsType = "virtiofs";
+
+          fileSystems."/" = {
+            device = "none";
+            fsType = "tmpfs";
+            options = [ "defaults" "mode=755" ];
+          };
+
+          system.stateVersion = "22.05";
+        };
         miniguests.container.configuration = {
           boot.miniguest.enable = true;
           boot.miniguest.guestType = "lxc";
@@ -37,8 +49,22 @@ let
       self.nixosModules.declarative
       {
         boot.isContainer = true;
+        miniguests.virtual-machine.system = "i686-linux";
         miniguests.virtual-machine.configuration = {
           boot.miniguest.enable = true;
+
+          fileSystems."/" = {
+            device = "none";
+            fsType = "tmpfs";
+            options = [ "defaults" "mode=755" ];
+          };
+
+          system.stateVersion = "22.05";
+        };
+        miniguests.virtual-machine-with-virtio.system = "i686-linux";
+        miniguests.virtual-machine-with-virtio.configuration = {
+          boot.miniguest.enable = true;
+          boot.miniguest.qemu.fsType = "virtiofs";
 
           fileSystems."/" = {
             device = "none";
