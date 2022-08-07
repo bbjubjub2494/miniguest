@@ -16,8 +16,8 @@ virt-install \\
   --disk none \\
   --import \\
   --boot kernel=/etc/miniguests/$name/kernel,initrd=$guests_dir/$name/initrd \\
-  --filesystem /nix/store,nix-store,readonly=yes,accessmode=squash \\
-  --filesystem /etc/miniguests/$name/boot,boot,readonly=yes,accessmode=squash \\
+  --filesystem /nix/store/,nix-store,readonly=yes,accessmode=squash \\
+  --filesystem /etc/miniguests/$name/boot/,boot,readonly=yes,accessmode=squash \\
 
 EOF
 	;;
