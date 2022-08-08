@@ -13,4 +13,4 @@
 - [ ] Documented intended functionality
 - [ ] Added checks for intended functionality
 - [ ] Changed Nix files are formatted per `nixpkgs-fmt`
-- [ ] Changed Bash files are formatted per `shfmt`
+- [ ] Changed C++ files are formatted per `clang-format`
