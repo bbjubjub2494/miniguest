@@ -1,0 +1,5 @@
+BasedOnStyle: LLVM
+
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortBlocksOnASingleLine: Empty
