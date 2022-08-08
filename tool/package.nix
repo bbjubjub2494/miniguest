@@ -1,4 +1,4 @@
-# Copyright 2021 Louis Bettens
+# Copyright 2022 Louis Bettens
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -12,41 +12,21 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-{ lib, stdenvNoCC, argbash, bash, coreutils, miniguest-lxc-template, nixFlakes, shellcheck, makeWrapper }:
+{ lib, stdenv, boost, miniguest-lxc-template, meson, ninja, nixFlakes, nlohmann_json, pkg-config }:
 
-stdenvNoCC.mkDerivation {
+stdenv.mkDerivation {
   pname = "miniguest";
-  version = "0.1.4";
+  version = "0.2";
   src = builtins.path { name = "source"; path = ./.; };
-  inherit bash nixFlakes;
   lxc_template = miniguest-lxc-template;
 
-  nativeBuildInputs = [ argbash makeWrapper ];
+  nativeBuildInputs = [ meson ninja nlohmann_json pkg-config ];
+  buildInputs = [ boost nixFlakes ];
 
-  buildPhase = ''
-    for f in *.bash; do
+  postPatch = ''
+    for f in *.cpp; do
       substituteAllInPlace $f
     done
-    for f in *_arg.bash; do
-      argbash --strip=all -i "$f"
-    done
-  '';
-
-  installPhase = ''
-    mkdir -p $out/{libexec/miniguest,bin}
-      mv *.bash $out/libexec/miniguest
-      chmod +x $out/libexec/miniguest/main.bash
-      # keep PATH open ended since Nix pulls from the environment e.g. git
-      makeWrapper $out/libexec/miniguest/main.bash $out/bin/miniguest \
-        --prefix PATH ":" "$out/libexec/miniguest:${coreutils}/bin"
-  '';
-
-  doInstallCheck = true;
-
-  installCheckInputs = [ shellcheck ];
-
-  installCheckPhase = ''
-    shellcheck -e SC2123 -x -s bash $out/bin/miniguest
   '';
 
   meta = with lib; {

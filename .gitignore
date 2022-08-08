@@ -2,3 +2,6 @@
 result*
 
 /template/flake.lock
+
+build/
+meson-*/
