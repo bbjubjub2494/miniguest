@@ -22,6 +22,8 @@
 
 using namespace nix;
 
+struct HelpRequested {};
+
 struct MiniguestArgs final : virtual MultiCommand, virtual MixCommonArgs {
   bool helpRequested = false;
 
@@ -31,7 +33,7 @@ struct MiniguestArgs final : virtual MultiCommand, virtual MixCommonArgs {
     addFlag({
         .longName = "help",
         .description = "Show usage information.",
-        .handler = {[&]() { helpRequested = true; }},
+        .handler = {[&]() { throw HelpRequested(); }},
     });
   }
 
@@ -59,8 +61,9 @@ void main0(int argc, char **argv) {
 
   settings.experimentalFeatures = {Xp::Flakes};
 
-  args.parseCmdline(argvToStrings(argc, argv));
-  if (args.helpRequested) {
+  try {
+    args.parseCmdline(argvToStrings(argc, argv));
+  } catch (HelpRequested &) {
     Args &cmd = args.command ? static_cast<Args &>(*args.command->second)
                              : static_cast<Args &>(args);
     std::cout << cmd.description() << std::endl;
