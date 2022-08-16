@@ -19,6 +19,8 @@
 #include <filesystem>
 #include <optional>
 
+namespace miniguest {
+
 struct ContextBuilder final {
   std::string guest_name;
   std::optional<std::filesystem::path> symlink_path, profile_path;
@@ -45,3 +47,5 @@ private:
 };
 
 void completeGuestName(size_t, std::string_view prefix);
+
+} // namespace miniguest

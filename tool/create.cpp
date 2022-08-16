@@ -30,6 +30,8 @@
 using namespace nix;
 namespace fs = std::filesystem;
 
+namespace miniguest {
+
 struct CmdCreate : virtual EvalCommand, virtual MixProfile {
   std::string guest_name;
   std::optional<std::string> hypervisor;
@@ -135,3 +137,5 @@ const std::map<std::string, CmdCreate::HypervisorData> CmdCreate::hypervisors{
 };
 
 static auto rCmdCreate = registerCommand<CmdCreate>("create");
+
+} // namespace miniguest

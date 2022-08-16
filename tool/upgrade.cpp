@@ -30,6 +30,8 @@
 using namespace nix;
 namespace fs = std::filesystem;
 
+namespace miniguest {
+
 struct CmdUpgrade : virtual EvalCommand, virtual MixProfile {
   std::string guest_name;
 
@@ -88,3 +90,5 @@ struct CmdUpgrade : virtual EvalCommand, virtual MixProfile {
 };
 
 static auto rCmdUpgrade = registerCommand<CmdUpgrade>("upgrade");
+
+} // namespace miniguest

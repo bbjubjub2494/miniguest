@@ -24,10 +24,10 @@ using namespace nix;
 
 struct HelpRequested {};
 
-struct MiniguestArgs final : virtual MultiCommand, virtual MixCommonArgs {
-  bool helpRequested = false;
+namespace miniguest {
 
-  MiniguestArgs()
+struct TopLevelArgs final : virtual MultiCommand, virtual MixCommonArgs {
+  TopLevelArgs()
       : MultiCommand(RegisterCommand::getCommandsFor({})),
         MixCommonArgs("miniguest") {
     addFlag({
@@ -57,7 +57,7 @@ struct MiniguestArgs final : virtual MultiCommand, virtual MixCommonArgs {
 void main0(int argc, char **argv) {
   initNix();
   initGC();
-  MiniguestArgs args;
+  TopLevelArgs args;
 
   settings.experimentalFeatures = {Xp::Flakes};
 
@@ -96,6 +96,9 @@ void main0(int argc, char **argv) {
   args.command->second->run();
 }
 
+} // namespace miniguest
+
 int main(int argc, char **argv) {
-  return nix::handleExceptions(argv[0], [=]() { main0(argc, argv); });
+  return nix::handleExceptions(argv[0],
+                               [=]() { miniguest::main0(argc, argv); });
 }

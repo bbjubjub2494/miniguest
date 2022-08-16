@@ -24,7 +24,7 @@
 namespace fs = std::filesystem;
 using namespace nix;
 
-Context ContextBuilder::build() {
+miniguest::Context miniguest::ContextBuilder::build() {
   if (!symlink_path)
     fs::create_directory(default_symlinks_dir);
   if (!profile_path)
@@ -33,19 +33,19 @@ Context ContextBuilder::build() {
           profile_path.value_or(default_profiles_dir / guest_name)};
 }
 
-void Context::ensure_symlink() {
+void miniguest::Context::ensure_symlink() {
   auto st = fs::symlink_status(symlink_path);
   if (!fs::exists(st))
     fs::create_symlink(profile_path, symlink_path);
   else
     check_symlink(st);
 }
-void Context::check_symlink(const fs::file_status &st) {
+void miniguest::Context::check_symlink(const fs::file_status &st) {
   if (!fs::is_symlink(st) || fs::read_symlink(symlink_path) != profile_path)
     throw Error(1,
                 "not touching symlink because it's not in an expected state");
 }
-void Context::remove_symlink() {
+void miniguest::Context::remove_symlink() {
   auto st = fs::symlink_status(symlink_path);
   if (fs::exists(st))
     check_symlink(st);
@@ -53,7 +53,7 @@ void Context::remove_symlink() {
   fs::remove(symlink_path);
 }
 
-void completeGuestName(size_t, std::string_view prefix) {
+void miniguest::completeGuestName(size_t, std::string_view prefix) {
   // FIXME: constant duplication
   fs::path dir = "/etc/miniguests";
 
