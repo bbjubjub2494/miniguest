@@ -30,6 +30,8 @@
 using namespace nix;
 namespace fs = std::filesystem;
 
+namespace miniguest {
+
 struct CmdRemove : virtual EvalCommand, virtual MixProfile {
   std::string guest_name;
 
@@ -73,3 +75,5 @@ struct CmdRemove : virtual EvalCommand, virtual MixProfile {
 };
 
 static auto rCmdRemove = registerCommand<CmdRemove>("remove");
+
+} // namespace miniguest
