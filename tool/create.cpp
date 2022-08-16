@@ -49,6 +49,16 @@ struct CmdCreate : virtual EvalCommand, virtual MixProfile {
 	-t, --hypervisor: hypervisor to configure. Can be one of: 'libvirt' and 'lxc' (default: 'libvirt'))"";
   }
 
+  GuestConfig load_config() {
+    auto path =
+        fs::path("/etc/miniguests") / guest_name / "miniguest-config.json";
+    try {
+      return nlohmann::json::parse(readFile(path)).get<GuestConfig>();
+    } catch (SysError &err) { logWarning(err.info()); }
+    warn("metadata unavailable: falling back to defaults");
+    return {};
+  }
+
   void display_command(Strings cmd) const {
     std::cout << "# Create " << guest_name << " using:" << std::endl;
     for (auto &line : cmd)
@@ -56,24 +66,28 @@ struct CmdCreate : virtual EvalCommand, virtual MixProfile {
     std::cout << std::endl;
   }
 
-  void display_command_libvirt() const {
+  void display_command_libvirt(const GuestConfig &cfg) const {
+    auto virtiofs = cfg.qemu_fs_type == QemuFsType::virtiofs;
+    std::string memorybacking =
+        virtiofs ? " --memorybacking=access.mode=shared" : "";
+    std::string fsArgs =
+        virtiofs ? "driver.type=virtiofs" : "readonly=yes,accessmode=squash";
     Strings cmd{
         "virt-install -n " + guest_name,
         "--connect qemu:///system",
         "--os-variant nixos-unstable",
-        "--memory 1536",
+        "--memory 1536" + memorybacking,
         "--disk none",
         "--import",
         "--boot kernel=/etc/miniguests/" + guest_name +
             "/kernel,initrd=/etc/miniguests/" + guest_name + "/initrd",
-        "--filesystem /nix/store/,nix-store,readonly=yes,accessmode=squash",
-        "--filesystem /etc/miniguests/" + guest_name +
-            "/boot/,boot,readonly=yes,accessmode=squash",
+        "--filesystem /nix/store/,nix-store," + fsArgs,
+        "--filesystem /etc/miniguests/" + guest_name + "/boot/,boot," + fsArgs,
     };
     display_command(cmd);
   }
 
-  void display_command_lxc() const {
+  void display_command_lxc(const GuestConfig &cfg) const {
     Strings cmd = {
         "lxc-create " + guest_name,
         "-f extra-config",
@@ -89,7 +103,7 @@ struct CmdCreate : virtual EvalCommand, virtual MixProfile {
   }
 
   struct HypervisorData {
-    void (CmdCreate::*display_commmand)() const;
+    void (CmdCreate::*display_commmand)(const GuestConfig &cfg) const;
   };
 
   static const std::map<std::string, HypervisorData> hypervisors;
@@ -119,13 +133,15 @@ struct CmdCreate : virtual EvalCommand, virtual MixProfile {
   }
 
   void run(ref<Store> store) override {
+    auto cfg = load_config();
+
     if (!hypervisor)
-      hypervisor = "libvirt";
+      hypervisor = cfg.guest_type == GuestType::lxc ? "lxc" : "libvirt";
 
     if (auto it = hypervisors.find(*hypervisor); it != hypervisors.end()) {
-      (this->*it->second.display_commmand)();
+      (this->*it->second.display_commmand)(cfg);
     } else
-      throw Error(2, "unknown hypervisor type");
+      throw Error(2, "unknown hypervisor type: " + *hypervisor);
   }
 
   virtual ~CmdCreate() = default;
