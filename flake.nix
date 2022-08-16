@@ -29,15 +29,15 @@
 
     sharedOverlays = [
       devshell.overlay
-      self.overlay
+      self.overlays.default
     ];
 
-    overlay = import tool/overlay.nix;
+    overlays.default = import tool/overlay.nix;
 
     nixosModules.core = import ./core;
     nixosModules.declarative = import ./declarative inputs;
 
-    defaultTemplate = {
+    templates.default = {
       description = "Example guest configurations";
       path = ./template;
     };
@@ -47,9 +47,8 @@
         inherit (channels.nixpkgs) miniguest;
         default = miniguest;
       };
-      defaultPackage = packages.default;
-      defaultApp = fup.lib.mkApp { drv = packages.default; };
-      devShell = channels.nixpkgs.callPackage nix/devshell.nix { };
+      apps.default = fup.lib.mkApp { drv = packages.default; };
+      devShells.default = channels.nixpkgs.callPackage nix/devshell.nix { };
       checks = import ./checks inputs channels.nixpkgs.system;
     };
   };
