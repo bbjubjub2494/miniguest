@@ -3,6 +3,6 @@
 
   outputs = inputs@{ self, nixpkgs }: rec {
     nixosModules.declarative = import ./default.nix inputs;
-    nixosModule = nixosModules.declarative;
+    nixosModules.default = nixosModules.declarative;
   };
 }

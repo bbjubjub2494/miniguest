@@ -3,6 +3,6 @@
 
   outputs = _: rec {
     nixosModules.core = import ./default.nix;
-    nixosModule = nixosModules.core;
+    nixosModules.default = nixosModules.core;
   };
 }
