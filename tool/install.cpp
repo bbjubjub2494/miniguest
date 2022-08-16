@@ -30,6 +30,8 @@
 using namespace nix;
 namespace fs = std::filesystem;
 
+namespace miniguest {
+
 struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
   std::optional<std::string> guest_name;
 
@@ -97,3 +99,5 @@ struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
 };
 
 static auto rCmdInstall = registerCommand<CmdInstall>("install");
+
+} // namespace miniguest
