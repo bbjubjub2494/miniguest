@@ -17,6 +17,7 @@
  */
 
 #include <filesystem>
+#include <nlohmann/json.hpp>
 #include <optional>
 
 namespace miniguest {
@@ -47,5 +48,27 @@ private:
 };
 
 void completeGuestName(size_t, std::string_view prefix);
+
+enum class GuestType { qemu, lxc };
+NLOHMANN_JSON_SERIALIZE_ENUM(GuestType, {
+                                            {GuestType::qemu, "qemu"},
+                                            {GuestType::lxc, "lxc"},
+                                        })
+
+enum class QemuFsType { _9p, virtiofs };
+NLOHMANN_JSON_SERIALIZE_ENUM(QemuFsType, {
+                                             {QemuFsType::_9p, "9p"},
+                                             {QemuFsType::virtiofs, "virtiofs"},
+                                         })
+
+struct GuestConfig final {
+  GuestType guest_type;
+  QemuFsType qemu_fs_type;
+};
+
+inline void from_json(const nlohmann::json &j, GuestConfig &cfg) {
+  j.at("guestType").get_to(cfg.guest_type);
+  j.at("qemu").at("fsType").get_to(cfg.qemu_fs_type);
+}
 
 } // namespace miniguest

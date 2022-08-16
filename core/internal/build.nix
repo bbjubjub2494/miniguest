@@ -26,6 +26,7 @@ mkIf cfg.enable {
       mkdir -p $out/boot
       ln -sT ${config.system.build.toplevel}/init $out/boot/init
       cp ${closureInfo}/registration $out/boot/nix-path-registration
+    ln -s ${pkgs.writeText "miniguest-config.json" (builtins.toJSON cfg)} $out/miniguest-config.json
     ${lib.optionalString (cfg.guestType == "qemu")
     "cp -P ${config.system.build.toplevel}/{kernel,initrd} -t $out"
     }
