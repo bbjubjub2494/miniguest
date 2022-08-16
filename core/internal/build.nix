@@ -1,4 +1,4 @@
-# Copyright 2021 Louis Bettens
+# Copyright 2022 Louis Bettens
 # 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
