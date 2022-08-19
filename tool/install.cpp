@@ -34,8 +34,15 @@ namespace miniguest {
 
 struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
   std::optional<std::string> guest_name;
+  bool force;
 
   CmdInstall() {
+    addFlag({
+        .longName = "force",
+        .shortName = 'f',
+        .description = "Override an existing guest",
+        .handler = {&force, true},
+    });
     addFlag({
         .longName = "name",
         .shortName = 'n',
@@ -52,6 +59,7 @@ struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
   std::string doc() override {
     return R""(miniguest install [-n|--name <arg>] <flake-reference>
 	<flake-reference>: guest to build
+	-f, --force: override an existing guest
 	-n, --name: name of the profile (no default))"";
   }
 
@@ -75,6 +83,11 @@ struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
 
     Context ctx = bld.build();
     profile = ctx.profile_path.native();
+    ProfileManifest manifest(*getEvalState(), *profile);
+
+    if (!manifest.elements.empty() && !force)
+      throw Error("A guest named “" + *guest_name +
+                  "” is already installed! use --force to replace it");
 
     auto installableFlake =
         std::static_pointer_cast<InstallableFlake>(installable);
@@ -85,7 +98,6 @@ struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
 
     auto [attrPath, resolvedRef, drv] = installableFlake->toDerivation();
 
-    ProfileManifest manifest(*getEvalState(), *profile);
     ProfileElement element;
     element.source = {installableFlake->flakeRef, resolvedRef, attrPath};
     element.updateStorePaths(getEvalStore(), store, result);
