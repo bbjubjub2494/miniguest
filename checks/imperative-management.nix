@@ -59,6 +59,45 @@ lib.optionalAttrs stdenv.isLinux {
     '';
   };
 
+  install_dummy_force = mkTest {
+    name = "miniguest-install-dummy-force";
+    testScript = ''
+      machine.succeed("""
+        miniguest install -f /tmp/flake1#dummy
+      """)
+      assert "foo" in machine.succeed("""
+        cat /etc/miniguests/dummy/boot/init
+      """)
+    '';
+  };
+
+  install_dummy_twice = mkTest {
+    name = "miniguest-install-dummy-twice";
+    testScript = ''
+      machine.succeed("""
+        miniguest install /tmp/flake1#dummy
+      """)
+      assert "--force" in machine.fail("""
+        miniguest install /tmp/flake1#dummy 2>&1
+      """)
+    '';
+  };
+
+  install_dummy_twice_force = mkTest {
+    name = "miniguest-install-dummy-twice-force";
+    testScript = ''
+      machine.succeed("""
+        miniguest install /tmp/flake1#dummy
+      """)
+      machine.succeed("""
+        miniguest install --force /tmp/flake1#dummy
+      """)
+      assert "foo" in machine.succeed("""
+        cat /etc/miniguests/dummy/boot/init
+      """)
+    '';
+  };
+
   install_rename = mkTest {
     name = "miniguest-install-rename";
     testScript = ''
