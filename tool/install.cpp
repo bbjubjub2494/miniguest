@@ -73,6 +73,15 @@ struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
   void run(ref<Store> store) override {
     auto evalState = getEvalState();
 
+    if (!guest_name) {
+      auto cursor = installable->getCursor(*evalState).get_ptr();
+      for (auto &a : {"config", "boot", "miniguest", "guestName"})
+        if (cursor)
+          cursor = cursor->maybeGetAttr(a);
+      if (cursor)
+        guest_name = cursor->getString();
+    }
+
     if (!guest_name)
       guest_name =
           evalState->symbols
