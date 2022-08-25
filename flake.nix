@@ -51,5 +51,8 @@
       devShells.default = channels.nixpkgs.callPackage nix/devshell.nix { };
       checks = import ./checks inputs channels.nixpkgs.system;
     };
+
+    # Sorry I don't have Darwin machines
+    herculesCI.ciSystems = [ "x86_64-linux" "aarch64-linux" ];
   };
 }
