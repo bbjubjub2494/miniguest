@@ -74,7 +74,9 @@ struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
     auto evalState = getEvalState();
 
     if (!guest_name)
-      guest_name = installable->getCursor(*evalState)->getAttrPath().back();
+      guest_name =
+          evalState->symbols
+              [installable->getCursor(*evalState)->getAttrPath().back()];
 
     ContextBuilder bld;
     bld.guest_name = *guest_name;
