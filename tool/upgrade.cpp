@@ -70,7 +70,8 @@ struct CmdUpgrade : virtual EvalCommand, virtual MixProfile {
 
       auto installable = std::make_shared<InstallableFlake>(
           nullptr, getEvalState(), FlakeRef(element.source->originalRef), "",
-          Strings{element.source->attrPath}, Strings{}, flake::LockFlags{});
+          OutputsSpec{}, Strings{element.source->attrPath}, Strings{},
+          flake::LockFlags{});
       auto [attrPath, resolvedRef, drv] = installable->toDerivation();
       if (element.source->resolvedRef == resolvedRef)
         continue;

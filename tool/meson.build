@@ -17,6 +17,7 @@ nixlibs = [
   dependency('nix-store'),
 ]
 add_project_arguments('-Wno-non-virtual-dtor', language: 'cpp')  # present in Nix headers
+add_project_arguments('-DHAVE_BOEHMGC=1', language: 'cpp')  # affects Nix headers
 
 
 src = [
