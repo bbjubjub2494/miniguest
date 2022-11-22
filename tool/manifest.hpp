@@ -25,21 +25,6 @@
 
 namespace nix {
 // from nix-env/user-env.cc
-inline DrvInfos queryInstalled(EvalState & state, const Path & userEnv)
-{
-    DrvInfos elems;
-    if (pathExists(userEnv + "/manifest.json"))
-        throw Error("profile '%s' is incompatible with 'nix-env'; please use 'nix profile' instead", userEnv);
-    Path manifestFile = userEnv + "/manifest.nix";
-    if (pathExists(manifestFile)) {
-        Value v;
-        state.evalFile(manifestFile, v);
-        Bindings & bindings(*state.allocBindings(0));
-        getDerivations(state, v, "", bindings, elems, false);
-    }
-    return elems;
-}
-
 inline bool createUserEnv(EvalState & state, DrvInfos & elems,
     const Path & profile, bool keepDerivations,
     const std::string & lockToken)
@@ -313,20 +298,6 @@ struct ProfileManifest
                         e["outputs"].get<OutputsSpec>()
                     };
                 }
-                elements.emplace_back(std::move(element));
-            }
-        }
-
-        else if (pathExists(profile + "/manifest.nix")) {
-            // FIXME: needed because of pure mode; ugly.
-            state.allowPath(state.store->followLinksToStore(profile));
-            state.allowPath(state.store->followLinksToStore(profile + "/manifest.nix"));
-
-            auto drvInfos = queryInstalled(state, state.store->followLinksToStore(profile));
-
-            for (auto & drvInfo : drvInfos) {
-                ProfileElement element;
-                element.storePaths = {drvInfo.queryOutPath()};
                 elements.emplace_back(std::move(element));
             }
         }
