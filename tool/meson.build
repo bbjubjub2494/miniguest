@@ -16,8 +16,11 @@ nixlibs = [
   dependency('nix-cmd'),
   dependency('nix-store'),
 ]
+
+nix_exe = dependency('nix-cmd').get_pkgconfig_variable('prefix')+'/bin/nix'
 add_project_arguments('-Wno-non-virtual-dtor', language: 'cpp')  # present in Nix headers
 add_project_arguments('-DHAVE_BOEHMGC=1', language: 'cpp')  # affects Nix headers
+add_project_arguments('-DNIX_EXE="'+nix_exe+'"', language: 'cpp')
 
 
 src = [
