@@ -62,7 +62,7 @@ void main0(int argc, char **argv) {
   settings.experimentalFeatures = {Xp::Flakes};
 
   if (argc > 0 && std::string_view(argv[0]) == "__build-remote") {
-    execvp("nix", argv);
+    execv(NIX_EXE, argv);
   }
 
   try {
