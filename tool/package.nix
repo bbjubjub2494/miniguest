@@ -16,7 +16,7 @@
 
 stdenv.mkDerivation {
   pname = "miniguest";
-  version = "0.2";
+  version = "0.2.1";
   src = builtins.path { name = "source"; path = ./.; };
   lxc_template = miniguest-lxc-template;
 
