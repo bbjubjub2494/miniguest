@@ -54,7 +54,9 @@ struct CmdCreate : virtual EvalCommand, virtual MixProfile {
         fs::path("/etc/miniguests") / guest_name / "miniguest-config.json";
     try {
       return nlohmann::json::parse(readFile(path)).get<GuestConfig>();
-    } catch (SysError &err) { logWarning(err.info()); }
+    } catch (SysError &err) {
+      logWarning(err.info());
+    }
     warn("metadata unavailable: falling back to defaults");
     return {};
   }
