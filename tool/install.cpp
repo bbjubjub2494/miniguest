@@ -34,7 +34,7 @@ namespace miniguest {
 
 struct CmdInstall : virtual InstallableCommand, virtual MixProfile {
   std::optional<std::string> guest_name;
-  bool force;
+  bool force = false;
 
   CmdInstall() {
     addFlag({
