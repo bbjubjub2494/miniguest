@@ -19,6 +19,10 @@ lib.optionalAttrs stdenv.isLinux {
       miniguests.container.configuration = {
         boot.miniguest.enable = true;
         boot.miniguest.guestType = "lxc";
+
+        # FIXME: hack due to test driver oddity
+        virtualisation.test.nodeName = "machine";
+        networking.hostName = "whatever";
       };
       environment.systemPackages = [ miniguest ];
 
