@@ -1,3 +1,10 @@
+# NOTICE: I have lost interest in this project
+
+As of February 9th, 2023
+I no longer rely on miniguest in production
+and don't actively maintain it.
+If you wish to take over, feel free.
+
 # Low-footprint NixOS images
 ![Latest release](https://img.shields.io/github/v/release/bbjubjub2494/miniguest)
 ![License](https://img.shields.io/github/license/bbjubjub2494/miniguest)
