@@ -19,6 +19,11 @@ with lib;
   options = {
     boot.miniguest = {
       enable = mkEnableOption "turn this configuration into a miniguest guest system.";
+      guestName = mkOption {
+        description = "What name to install this guest under.";
+        default = null;
+        type = with types; nullOr str;
+      };
       guestType = mkOption {
         description = "Which hypervisor technology this guest should be configured for.";
         default = "qemu";
